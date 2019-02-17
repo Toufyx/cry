@@ -36,5 +36,5 @@ See also the list of [contributors](https://github.com/Toufyx/cry/contributors) 
 
 ## License
 
-This project is licensed under the WTFPL License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the WTFPL License - see the [LICENSE](LICENSE) file for details
 
