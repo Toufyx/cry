@@ -1,5 +1,5 @@
 
-# Cry CLI
+# cry CLI
 
 Simple CLI to manage encrypted files
 
