@@ -13,5 +13,5 @@ var rooter = CommandRooter()
 rooter.register(EncryptCommand.self)
 rooter.register(DecryptCommand.self)
 rooter.register(ReadCommand.self, isDefault: true)
-rooter.run()
+rooter.process(Array(ProcessInfo.processInfo.arguments.dropFirst()))
 

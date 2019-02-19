@@ -10,6 +10,7 @@ import Basic
 import Utility
 
 
+/// Ecrypt Command
 struct EncryptCommand: Command, FileManagementCommand {
     var command: String = "encrypt"
     var usage: String = "encrypt <FILE>"

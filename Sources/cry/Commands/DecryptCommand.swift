@@ -10,6 +10,7 @@ import Basic
 import Utility
 
 
+/// Decrypt command
 struct DecryptCommand: Command, FileManagementCommand {
     var command: String = "decrypt"
     var usage: String = "decrypt <FILE>"

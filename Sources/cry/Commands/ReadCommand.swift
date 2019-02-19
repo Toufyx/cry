@@ -10,6 +10,7 @@ import Basic
 import Utility
 
 
+/// Read Command (default) 
 struct ReadCommand: Command, FileManagementCommand {
     var command: String = "read"
     var usage: String = "read <FILE>"

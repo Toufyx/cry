@@ -5,16 +5,19 @@
 //  Created by Thibault Defeyter on 17/02/2019.
 //
 
-import Foundation
 
-
+/// Help Command
 struct HelpCommand: Command {
     var command: String = "help"
-    var usage: String = ""
-    var overview: String = ""
+    var usage: String = "cry help"
+    var overview: String = "Show this help message"
     
+    /// Empty constructor for protocol compliance
     init() {}
     
+    /// Write down the rooting dispatch
+    /// Expect subcommands and their descriptions listed like this:
+    /// [command-1, description-1, command-2, description-2, ...]
     func run(with arguments: [String]) throws {
         print("OVERVIEW: manage encryption for files")
         print("")

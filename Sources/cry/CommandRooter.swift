@@ -10,10 +10,19 @@ import Basic
 import Utility
 
 
+/// Root arguments to the right SubCommand
 class CommandRooter {
+    
+    /// List of subcommands registered
     private var commands: [Command] = []
+    
+    /// The default subcommand -> `help` by default -> can be overwritten
     private var defaultCommand: Command = HelpCommand()
     
+    /// Register a subcommand
+    /// Args:
+    ///     - command (Command.Type): a command class to be registered on the rooter
+    ///     - isDefault (bool): whether the command should take the default's place
     func register(_ command: Command.Type, isDefault: Bool = false) {
         self.commands.append(command.init())
         if isDefault {
@@ -21,29 +30,33 @@ class CommandRooter {
         }
     }
     
-    func run() {
-        var arguments = Array(ProcessInfo.processInfo.arguments.dropFirst())
+    /// Process the given arguments
+    func process(_ arguments: [String]) {
         var command = self.defaultCommand
+        var subcommandArguments = arguments
         do {
 
-            // root to help command for fallback
+            // if no arguments were passed to the CLI or if help, -help, --help
+            // or whatever containing help is passed as first argument then run the help command
             if arguments.count == 0 || arguments[0].contains("help") {
-                command = HelpCommand()
-                try command.run(with: self.commands.flatMap({[$0.command, $0.overview]}))
+                try HelpCommand().run(with: self.commands.flatMap({[$0.command, $0.overview]}))
                 exit(0)
             }
         
-            // root to appropriate command if all good
+            // otherwise root to the appropriate command if one is present ( or default otherwise )
             if let argumentCommand = self.commands.first(where: {$0.command == arguments[0]}) {
-                arguments.removeFirst()
+                subcommandArguments.removeFirst()
                 command = argumentCommand
             }
-            try command.run(with: arguments)
+            try command.run(with: subcommandArguments)
             exit(0)
 
+        // catch ArgumentParserError to pretty print their error
         } catch let error as ArgumentParserError {
             print(error.description)
             exit(1)
+        
+        // or just print anything that went wrong !
         } catch let error {
             print(error.localizedDescription)
             exit(1)
