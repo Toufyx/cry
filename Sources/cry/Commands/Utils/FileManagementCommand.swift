@@ -16,7 +16,7 @@ import Files
 protocol FileManagementCommand {
     var parser: ArgumentParser { get }
     var file: PositionalArgument<String> { get }
-    func process(file: File)
+    func process(file: File) throws
 }
 
 
@@ -34,11 +34,5 @@ extension FileManagementCommand where Self: Command {
         } catch let error as Files.FileSystem.Item.PathError {
             throw ArgumentParserError.invalidValue(argument: "file", error: .custom(error.description))
         }
-    }
-    
-    /// Default implementation of file processing does nothing
-    /// Method to be overwritten in protocols implementation
-    func process(file: File) {
-        print("\(self.command): \(file.name)")
     }
 }

@@ -8,10 +8,11 @@
 import Foundation
 import Basic
 import Utility
+import Files
 
 
 /// Ecrypt Command
-struct EncryptCommand: Command, FileManagementCommand {
+struct EncryptCommand: Command, FileManagementCommand, PassphrasedCommand {
     var command: String = "encrypt"
     var usage: String = "encrypt <FILE>"
     var overview: String = "Encrypt a given file."
@@ -28,5 +29,12 @@ struct EncryptCommand: Command, FileManagementCommand {
             usage: "The file to be encrpyted.",
             completion: nil
         )
+    }
+
+    /// Default implementation of file processing does nothing
+    /// Method to be overwritten in protocols implementation
+    func process(file: File) {
+        let passphrase = self.getPassphrase()
+        print("\(self.command): \(file.name) with passphrase: \(passphrase)")
     }
 }
