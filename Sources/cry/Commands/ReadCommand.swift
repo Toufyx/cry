@@ -36,6 +36,11 @@ struct ReadCommand: Command, FileManagementCommand, PassphrasedCommand {
     func process(file: File) throws {
         let passphrase = self.getPassphrase()
         print("\(self.command): \(file.name) with passphrase: \(passphrase)")
-        try print(file.readAsString())
+        let decrypted_data = try SimpleCrypto.decrypt(try file.read(), passphrase: passphrase)
+        if let decrypted_string = String(data: decrypted_data, encoding: .utf8) {
+            print(decrypted_string)
+        } else {
+            print("ERROR: Enable to get UTF-8 string from decrypted data")
+        }
     }
 }

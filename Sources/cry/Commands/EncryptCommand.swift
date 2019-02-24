@@ -33,8 +33,10 @@ struct EncryptCommand: Command, FileManagementCommand, PassphrasedCommand {
 
     /// Default implementation of file processing does nothing
     /// Method to be overwritten in protocols implementation
-    func process(file: File) {
+    func process(file: File) throws {
         let passphrase = self.getPassphrase()
         print("\(self.command): \(file.name) with passphrase: \(passphrase)")
+        let encrypted_data = try SimpleCrypto.encrypt(try file.read(), passphrase: passphrase)
+        try file.write(data: encrypted_data)
     }
 }
