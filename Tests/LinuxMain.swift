@@ -1,7 +1,7 @@
 import XCTest
 
-import cryTests
+import CryCipherTests
 
 var tests = [XCTestCaseEntry]()
-tests += cryTests.allTests()
+tests += CryCipherTests.allTests()
 XCTMain(tests)
