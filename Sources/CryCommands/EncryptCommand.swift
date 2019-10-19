@@ -1,5 +1,5 @@
 //
-//  ReadCommand.swift
+//  EncryptCommand.swift
 //  cry
 //
 //  Created by Thibault Defeyter on 17/02/2019.
@@ -11,22 +11,22 @@ import Utility
 import Files
 
 
-/// Read Command (default) 
-struct ReadCommand: Command, FileManagementCommand, PassphrasedCommand {
-    var command: String = "read"
-    var usage: String = "read <FILE>"
-    var overview: String = "Read a given encrypted file."
-    
+/// Ecrypt Command
+struct EncryptCommand: Command, FileManagementCommand, PassphrasedCommand {
+    var command: String = "encrypt"
+    var usage: String = "encrypt <FILE>"
+    var overview: String = "Encrypt a given file."
+
     var parser: ArgumentParser
     var file: PositionalArgument<String>
-    
+
     init() {
         self.parser = ArgumentParser(usage: self.usage, overview: self.overview)
         self.file = self.parser.add(
             positional: "file",
             kind: String.self,
             optional: false,
-            usage: "The file to be read.",
+            usage: "The file to be encrpyted.",
             completion: nil
         )
     }
@@ -36,11 +36,5 @@ struct ReadCommand: Command, FileManagementCommand, PassphrasedCommand {
     func process(file: File) throws {
         let passphrase = self.getPassphrase()
         print("\(self.command): \(file.name) with passphrase: \(passphrase)")
-        let decrypted_data = try SimpleCrypto.decrypt(try file.read(), passphrase: passphrase)
-        if let decrypted_string = String(data: decrypted_data, encoding: .utf8) {
-            print(decrypted_string)
-        } else {
-            print("ERROR: Enable to get UTF-8 string from decrypted data")
-        }
     }
 }

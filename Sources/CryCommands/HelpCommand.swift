@@ -11,10 +11,10 @@ struct HelpCommand: Command {
     var command: String = "help"
     var usage: String = "cry help"
     var overview: String = "Show this help message"
-    
+
     /// Empty constructor for protocol compliance
     init() {}
-    
+
     /// Write down the rooting dispatch
     /// Expect subcommands and their descriptions listed like this:
     /// [command-1, description-1, command-2, description-2, ...]

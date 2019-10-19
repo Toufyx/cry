@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "0.9.0"),
     ],
     targets: [
-        .target(name: "cry", dependencies: ["Utility", "Files", "CryptoSwift"]),
-        .testTarget(name: "cryTests", dependencies: ["cry"]),
+        .target(name: "CryCommands", dependencies: ["Utility", "Files", "CryptoSwift"]),
+	.target(name: "CryCLI", dependencies: ["CryCommands"])
     ]
 )

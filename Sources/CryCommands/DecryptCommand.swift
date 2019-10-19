@@ -16,10 +16,10 @@ struct DecryptCommand: Command, FileManagementCommand, PassphrasedCommand {
     var command: String = "decrypt"
     var usage: String = "decrypt <FILE>"
     var overview: String = "Decrypt a given files."
-    
+
     var parser: ArgumentParser
     var file: PositionalArgument<String>
-    
+
     init() {
         self.parser = ArgumentParser(usage: self.usage, overview: self.overview)
         self.file = self.parser.add(
@@ -36,7 +36,5 @@ struct DecryptCommand: Command, FileManagementCommand, PassphrasedCommand {
     func process(file: File) throws {
         let passphrase = self.getPassphrase()
         print("\(self.command): \(file.name) with passphrase: \(passphrase)")
-        let decrypted_data = try SimpleCrypto.decrypt(try file.read(), passphrase: passphrase)
-        try file.write(data: decrypted_data)
     }
 }
