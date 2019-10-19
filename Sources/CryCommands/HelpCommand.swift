@@ -26,11 +26,11 @@ struct HelpCommand: Command {
         print("SUBCOMMANDS:")
         var index = 0
         while index < arguments.count {
-            let formattedCommand = arguments[index].withCString{
+            let formattedCommand = arguments[index].withCString {
                 String(format: "  %-18s", $0)
             }
             print("\(formattedCommand) \(arguments[index+1])")
-            index = index + 2
+            index += 2
         }
     }
 }

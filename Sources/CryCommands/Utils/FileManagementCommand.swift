@@ -30,7 +30,7 @@ extension FileManagementCommand where Self: Command {
             throw ArgumentParserError.expectedArguments(self.parser, ["file"])
         }
         do {
-            try self.process(file: File(path:filePath))
+            try self.process(file: File(path: filePath))
         } catch let error as Files.FileSystem.Item.PathError {
             throw ArgumentParserError.invalidValue(argument: "file", error: .custom(error.description))
         }

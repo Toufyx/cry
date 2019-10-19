@@ -48,7 +48,7 @@ public final class CommandRooter {
 
             // if no arguments were passed to the CLI or if help, -help, --help
             // or whatever containing help is passed as first argument then run the help command
-            if arguments.count == 0 || arguments[0].contains("help") {
+            if arguments.isEmpty || arguments[0].contains("help") {
                 try HelpCommand().run(with: self.commands.flatMap({[$0.command, $0.overview]}))
                 exit(0)
             }
