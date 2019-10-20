@@ -8,10 +8,10 @@
 import Foundation
 import CryCommands
 
-let rooter = CommandRooter()
+let cry = CryCommand()
 
 do {
-    try rooter.run()
+    try cry.run(argc: Int(CommandLine.argc), argv: CommandLine.arguments)
 } catch {
-    print("Whoops! An error occurred: \(error)")
+    print("Whoops! An unexpected error occurred: \(error)")
 }
