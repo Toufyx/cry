@@ -12,6 +12,6 @@ let cry = CryCommand()
 
 do {
     try cry.run(argc: Int(CommandLine.argc), argv: CommandLine.arguments)
-} catch {
-    print("Whoops! An unexpected error occurred: \(error)")
+} catch let error {
+    print("\(error)")
 }
