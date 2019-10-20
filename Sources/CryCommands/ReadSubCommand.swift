@@ -7,6 +7,7 @@
 
 import Utility
 import Files
+import CryCipher
 
 
 /// The read SubCommand
@@ -31,6 +32,9 @@ struct ReadSubCommand: SubCommand, FileManagementSubCommand, PassphrasedSubComma
         let file = try self.file(from: arguments)
         let passphrase = self.promptPassphrase()
         print("\(self.name) \(file.name) with passphrase \(passphrase)")
+        let cipher = try CipherSerializer().deserialize(bytes: try [UInt8](file.read()))
+        let content = try CipherManager().decrypt(content: cipher, withSecret: [UInt8](passphrase.utf8))
+        print(String(bytes: content, encoding: .utf8) ?? "unable to read UTF8 From Content")
     }
 
 }

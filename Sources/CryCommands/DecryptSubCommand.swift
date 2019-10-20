@@ -5,9 +5,10 @@
 //  Created by Thibault Defeyter on 21/10/2019.
 //
 
+import Foundation
 import Utility
 import Files
-
+import CryCipher
 
 
 /// The decrypt SubCommand
@@ -31,6 +32,10 @@ struct DecryptSubCommand: SubCommand, FileManagementSubCommand, PassphrasedSubCo
     func run(with arguments: ArgumentParser.Result) throws {
         let file = try self.file(from: arguments)
         let passphrase = self.promptPassphrase()
-        print("\(self.name) \(file.name) with passphrase \(passphrase)")
+        print("decrypting \(file.name) with passphrase \(passphrase)...")
+        let cipher = try CipherSerializer().deserialize(bytes: try [UInt8](file.read()))
+        let content = try CipherManager().decrypt(content: cipher, withSecret: [UInt8](passphrase.utf8))
+        try file.write(data: Data(bytes: content))
+        print("decryption succeeded")
     }
 }

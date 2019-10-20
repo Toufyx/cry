@@ -5,8 +5,10 @@
 //  Created by Thibault Defeyter on 21/10/2019.
 //
 
+import Foundation
 import Utility
 import Files
+import CryCipher
 
 
 /// The encrypt SubCommand
@@ -30,6 +32,10 @@ struct EncryptSubCommand: SubCommand, FileManagementSubCommand, PassphrasedSubCo
     func run(with arguments: ArgumentParser.Result) throws {
         let file = try self.file(from: arguments)
         let passphrase = self.promptPassphrase()
-        print("\(self.name) \(file.name) with passphrase \(passphrase)")
+        print("encrypting \(file.name) with passphrase \(passphrase)...")
+        let cipher = try CipherManager().encrypt(content: try [UInt8](file.read()), withSecret: [UInt8](passphrase.utf8))
+        let content = try CipherSerializer().serialize(item: cipher)
+        try file.write(data: Data(bytes: content))
+        print("encryption succeeded")
     }
 }
