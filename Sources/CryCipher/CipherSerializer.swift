@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Errors that could occur while deserializing a Cipher Object
-public enum DataValidationError: Error {
+public enum BytesValidationError: Error {
     case invalidBytesNumber(_ bytes: [UInt8])
     case invalidHeader(_ bytes: [UInt8])
 }
@@ -90,11 +90,11 @@ public struct CipherSerializer {
         let rules: [ValidationRule<[UInt8]>] = [
             ValidationRule<[UInt8]>(
                 predicate: { $0.count > CipherConstants.totalLength },
-                error: { DataValidationError.invalidBytesNumber($0) }
+                error: { BytesValidationError.invalidBytesNumber($0) }
             ),
             ValidationRule<[UInt8]>(
                 predicate: { Array($0[0..<CipherConstants.headerLength]) == CipherConstants.header },
-                error: { DataValidationError.invalidHeader($0) }
+                error: { BytesValidationError.invalidHeader($0) }
             )
         ]
 
