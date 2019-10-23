@@ -19,7 +19,7 @@ public enum CipherValidationError: Error {
     case invalidHeaderLength(_ cipher: Cipher)
     case invalidHeader(_ cipher: Cipher)
     case invalidSaltLength(_ cipher: Cipher)
-    case invalidinitializationVectorLength(_ cipher: Cipher)
+    case invalidInitializationVectorLength(_ cipher: Cipher)
 }
 
 
@@ -71,7 +71,7 @@ public struct CipherSerializer {
             ),
             ValidationRule<Cipher>(
                 predicate: { $0.initializationVector.count == CipherConstants.initializationVectorLength },
-                error: { CipherValidationError.invalidinitializationVectorLength($0) }
+                error: { CipherValidationError.invalidInitializationVectorLength($0) }
             ),
             ValidationRule<Cipher>(
                 predicate: { $0.header == CipherConstants.header },
