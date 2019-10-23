@@ -37,7 +37,7 @@ public struct CipherSerializer {
 
     public func serialize(item: Cipher) throws -> [UInt8] {
         try self.validate(cipher: item)
-        return item.header + item.salt + item.initializationVector + item.encryptedContent
+        return item.header + item.salt + item.initializationVector + item.encryptedBytes
     }
 
     public func deserialize(bytes: [UInt8]) throws -> Cipher {
@@ -55,7 +55,7 @@ public struct CipherSerializer {
         let contentEnd = bytes.count
         let content = Array(bytes[contentStart..<contentEnd])
 
-        let cipher = Cipher(salt: salt, initializationVector: initializationVector, encryptedContent: content)
+        let cipher = Cipher(salt: salt, initializationVector: initializationVector, encryptedBytes: content)
         return cipher
     }
 

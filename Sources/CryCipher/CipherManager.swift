@@ -25,7 +25,7 @@ public struct Cipher: Equatable {
     let header: [UInt8] = CipherConstants.header
     let salt: [UInt8]
     let initializationVector: [UInt8]
-    let encryptedContent: [UInt8]
+    let encryptedBytes: [UInt8]
 }
 
 
@@ -72,7 +72,7 @@ public struct CipherManager: Manager {
             withSecret: EncryptionSecret(key: key.encryptionKey, initializationVector: initializationVector)
         )
 
-        return Cipher(salt: salt, initializationVector: initializationVector, encryptedContent: encryptedBytes)
+        return Cipher(salt: salt, initializationVector: initializationVector, encryptedBytes: encryptedBytes)
     }
 
     public func decrypt(content: EncryptedContent, withSecret secret: Secret) throws -> ClearContent {
@@ -82,7 +82,7 @@ public struct CipherManager: Manager {
 
         // decrypt the data using AES256 (key and init vector)
         let decryptedBytes = try self.encryptionManager.decrypt(
-            content: content.encryptedContent,
+            content: content.encryptedBytes,
             withSecret: EncryptionSecret(key: key.encryptionKey, initializationVector: content.initializationVector)
         )
 

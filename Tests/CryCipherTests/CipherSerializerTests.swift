@@ -24,7 +24,7 @@ class CipherSerializerTests: XCTestCase {
     let validCipher = Cipher(
         salt: CipherSerializerTests.validSaltBytes,
         initializationVector: CipherSerializerTests.validInitVectorBytes,
-        encryptedContent: CipherSerializerTests.validEncryptedDataBytes
+        encryptedBytes: CipherSerializerTests.validEncryptedDataBytes
     )
     let validData = ([67, 82, 89, 48, 48, 48, 48, 49]
         + CipherSerializerTests.validSaltBytes

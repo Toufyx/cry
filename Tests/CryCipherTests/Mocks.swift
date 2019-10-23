@@ -13,16 +13,16 @@ class EncryptionManagerStub: Manager {
     typealias EncryptedContent = [UInt8]
     typealias Secret = EncryptionSecret
 
-    private let encryptedContent: EncryptedContent
+    private let encryptedBytes: EncryptedContent
     private let decryptedContent: ClearContent
 
-    init(encryptedContent: EncryptedContent? = nil, decryptedContent: ClearContent? = nil) {
-        self.encryptedContent = encryptedContent ?? []
+    init(encryptedBytes: EncryptedContent? = nil, decryptedContent: ClearContent? = nil) {
+        self.encryptedBytes = encryptedBytes ?? []
         self.decryptedContent = decryptedContent ?? []
     }
 
     func encrypt(content: [UInt8], withSecret secret: EncryptionSecret) throws -> [UInt8] {
-        return self.encryptedContent
+        return self.encryptedBytes
     }
 
     func decrypt(content: [UInt8], withSecret secret: EncryptionSecret) throws -> [UInt8] {

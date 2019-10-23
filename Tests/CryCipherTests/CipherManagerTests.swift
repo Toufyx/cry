@@ -26,7 +26,7 @@ class CipherManagerTests: XCTestCase {
     static let validCipher = Cipher(
         salt: CipherManagerTests.validSaltBytes,
         initializationVector: CipherManagerTests.validInitVectorBytes,
-        encryptedContent: CipherManagerTests.validEncryptedDataBytes
+        encryptedBytes: CipherManagerTests.validEncryptedDataBytes
     )
 
     func testDecrypt() {
@@ -49,7 +49,7 @@ class CipherManagerTests: XCTestCase {
     func testEncrypt() {
         let manager = CipherManager(
             encryptionManager: AnyManager(
-                manager: EncryptionManagerStub(encryptedContent: CipherManagerTests.validEncryptedDataBytes)
+                manager: EncryptionManagerStub(encryptedBytes: CipherManagerTests.validEncryptedDataBytes)
             ),
             randomGenerator: RandomGeneratorStub(randomBytesClosure: { return [UInt8](1...$0)}),
             keyCoupleGenerator: KeyCoupleGeneratorStub(encryptionKey: CipherManagerTests.validKeyBytes)
@@ -62,7 +62,7 @@ class CipherManagerTests: XCTestCase {
             Cipher(
                 salt: CipherManagerTests.validSaltBytes,
                 initializationVector: CipherManagerTests.validInitVectorBytes,
-                encryptedContent: CipherManagerTests.validEncryptedDataBytes
+                encryptedBytes: CipherManagerTests.validEncryptedDataBytes
             )
         )
     }
