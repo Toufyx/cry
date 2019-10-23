@@ -9,22 +9,20 @@ import Foundation
 import CryptoSwift
 
 
-/// The Cipher to be written/read from the encrypted file
-public struct Cipher: Equatable {
-
+/// Cipher related Constants
+struct CipherConstants {
     static let headerLength = 8
     static let saltLength = 32
     static let initializationVectorLength = 16
+    static let totalLength = headerLength + saltLength + initializationVectorLength
     static let currentVersion = 0
-    static let headers = [
-        [UInt8]("CRY00001".utf8)
-    ]
+    static let header = [UInt8]("CRY00001".utf8)
+}
 
-    static let currentHeader: [UInt8] = {
-         return Cipher.headers[Cipher.currentVersion]
-    }()
 
-    let header: [UInt8] = Cipher.currentHeader
+/// The Cipher to be written/read from the encrypted file
+public struct Cipher: Equatable {
+    let header: [UInt8] = CipherConstants.header
     let salt: [UInt8]
     let initializationVector: [UInt8]
     let encryptedContent: [UInt8]
@@ -60,8 +58,10 @@ public struct CipherManager: Manager {
     public func encrypt(content: ClearContent, withSecret secret: Secret) throws -> EncryptedContent {
 
         // generate random salt and init vector for key generation
-        let salt = try self.randomGenerator.generateRandomBytes(length: Cipher.saltLength)
-        let initVector = try self.randomGenerator.generateRandomBytes(length: Cipher.initializationVectorLength)
+        let salt = try self.randomGenerator.generateRandomBytes(length: CipherConstants.saltLength)
+        let initializationVector = try self.randomGenerator.generateRandomBytes(
+            length: CipherConstants.initializationVectorLength
+        )
 
         // generate a key from secret and salt
         let key = try self.keyCoupleGenerator.generateKeyCouple(fromPassword: secret, andSalt: salt)
@@ -69,10 +69,10 @@ public struct CipherManager: Manager {
         // encrypt the data using AES256 (key and init vector)
         let encryptedBytes = try self.encryptionManager.encrypt(
             content: content,
-            withSecret: EncryptionSecret(key: key.encryptionKey, initializationVector: initVector)
+            withSecret: EncryptionSecret(key: key.encryptionKey, initializationVector: initializationVector)
         )
 
-        return Cipher(salt: salt, initializationVector: initVector, encryptedContent: encryptedBytes)
+        return Cipher(salt: salt, initializationVector: initializationVector, encryptedContent: encryptedBytes)
     }
 
     public func decrypt(content: EncryptedContent, withSecret secret: Secret) throws -> ClearContent {

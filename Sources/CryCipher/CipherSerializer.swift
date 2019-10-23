@@ -12,16 +12,14 @@ import Foundation
 public enum DataValidationError: Error {
     case invalidBytesNumber(_ bytes: [UInt8])
     case invalidHeader(_ bytes: [UInt8])
-    case deprecatedHeader(_ bytes: [UInt8])
 }
 
 /// Errors that could occur while Serializing a Cipher Object
 public enum CipherValidationError: Error {
     case invalidHeaderLength(_ cipher: Cipher)
     case invalidHeader(_ cipher: Cipher)
-    case deprecatedHeader(_ cipher: Cipher)
     case invalidSaltLength(_ cipher: Cipher)
-    case invalidInitVectorLength(_ cipher: Cipher)
+    case invalidinitializationVectorLength(_ cipher: Cipher)
 }
 
 
@@ -45,43 +43,39 @@ public struct CipherSerializer {
     public func deserialize(bytes: [UInt8]) throws -> Cipher {
         try self.validate(bytes: bytes)
 
-        let saltStart = Cipher.headerLength
-        let saltEnd = saltStart + Cipher.saltLength
+        let saltStart = CipherConstants.headerLength
+        let saltEnd = saltStart + CipherConstants.saltLength
         let salt = Array(bytes[saltStart..<saltEnd])
 
-        let initVectorStart = saltEnd
-        let initVectorEnd = initVectorStart + Cipher.initializationVectorLength
-        let initVector = Array(bytes[initVectorStart..<initVectorEnd])
+        let initializationVectorStart = saltEnd
+        let initializationVectorEnd = initializationVectorStart + CipherConstants.initializationVectorLength
+        let initializationVector = Array(bytes[initializationVectorStart..<initializationVectorEnd])
 
-        let contentStart = initVectorEnd
+        let contentStart = initializationVectorEnd
         let contentEnd = bytes.count
         let content = Array(bytes[contentStart..<contentEnd])
 
-        let cipher = Cipher(salt: salt, initializationVector: initVector, encryptedContent: content)
+        let cipher = Cipher(salt: salt, initializationVector: initializationVector, encryptedContent: content)
         return cipher
     }
 
     private func validate(cipher: Cipher) throws {
         let rules: [ValidationRule<Cipher>] = [
             ValidationRule<Cipher>(
-                predicate: { $0.header.count == Cipher.headerLength },
+                predicate: { $0.header.count == CipherConstants.headerLength },
                 error: { CipherValidationError.invalidHeaderLength($0) }
             ),
             ValidationRule<Cipher>(
-                predicate: { $0.salt.count == Cipher.saltLength },
+                predicate: { $0.salt.count == CipherConstants.saltLength },
                 error: { CipherValidationError.invalidSaltLength($0) }
             ),
             ValidationRule<Cipher>(
-                predicate: { $0.initializationVector.count == Cipher.initializationVectorLength },
-                error: { CipherValidationError.invalidInitVectorLength($0) }
+                predicate: { $0.initializationVector.count == CipherConstants.initializationVectorLength },
+                error: { CipherValidationError.invalidinitializationVectorLength($0) }
             ),
             ValidationRule<Cipher>(
-                predicate: { Cipher.headers.contains($0.header) },
+                predicate: { $0.header == CipherConstants.header },
                 error: { CipherValidationError.invalidHeader($0) }
-            ),
-            ValidationRule<Cipher>(
-                predicate: { $0.header == Cipher.currentHeader },
-                error: { CipherValidationError.deprecatedHeader($0) }
             )
         ]
 
@@ -95,16 +89,12 @@ public struct CipherSerializer {
     private func validate(bytes: [UInt8]) throws {
         let rules: [ValidationRule<[UInt8]>] = [
             ValidationRule<[UInt8]>(
-                predicate: { $0.count > Cipher.headerLength + Cipher.saltLength + Cipher.initializationVectorLength },
+                predicate: { $0.count > CipherConstants.totalLength },
                 error: { DataValidationError.invalidBytesNumber($0) }
             ),
             ValidationRule<[UInt8]>(
-                predicate: { Cipher.headers.contains(Array($0[0..<Cipher.headerLength])) },
-                error: {DataValidationError.invalidHeader($0) }
-            ),
-            ValidationRule<[UInt8]>(
-                predicate: { Array($0[0..<Cipher.headerLength]) == Cipher.currentHeader },
-                error: { DataValidationError.deprecatedHeader($0) }
+                predicate: { Array($0[0..<CipherConstants.headerLength]) == CipherConstants.header },
+                error: { DataValidationError.invalidHeader($0) }
             )
         ]
 
