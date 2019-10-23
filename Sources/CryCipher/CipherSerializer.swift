@@ -20,6 +20,7 @@ public enum CipherValidationError: Error {
     case invalidHeader(_ cipher: Cipher)
     case invalidSaltLength(_ cipher: Cipher)
     case invalidInitializationVectorLength(_ cipher: Cipher)
+    case invalidHashLength(_ cipher: Cipher)
 }
 
 
@@ -37,7 +38,7 @@ public struct CipherSerializer {
 
     public func serialize(item: Cipher) throws -> [UInt8] {
         try self.validate(cipher: item)
-        return item.header + item.salt + item.initializationVector + item.encryptedBytes
+        return item.header + item.salt + item.initializationVector + item.encryptedBytes + item.hash
     }
 
     public func deserialize(bytes: [UInt8]) throws -> Cipher {
@@ -52,11 +53,19 @@ public struct CipherSerializer {
         let initializationVector = Array(bytes[initializationVectorStart..<initializationVectorEnd])
 
         let contentStart = initializationVectorEnd
-        let contentEnd = bytes.count
+        let contentEnd = bytes.count - CipherConstants.hashLength
         let content = Array(bytes[contentStart..<contentEnd])
 
-        let cipher = Cipher(salt: salt, initializationVector: initializationVector, encryptedBytes: content)
-        return cipher
+        let hashStart = contentEnd
+        let hashEnd = bytes.count
+        let hash = Array(bytes[hashStart..<hashEnd])
+
+        return Cipher(
+            salt: salt,
+            initializationVector: initializationVector,
+            encryptedBytes: content,
+            hash: hash
+        )
     }
 
     private func validate(cipher: Cipher) throws {
@@ -72,6 +81,10 @@ public struct CipherSerializer {
             ValidationRule<Cipher>(
                 predicate: { $0.initializationVector.count == CipherConstants.initializationVectorLength },
                 error: { CipherValidationError.invalidInitializationVectorLength($0) }
+            ),
+            ValidationRule<Cipher>(
+                predicate: { $0.hash.count == CipherConstants.hashLength },
+                error: { CipherValidationError.invalidHashLength($0) }
             ),
             ValidationRule<Cipher>(
                 predicate: { $0.header == CipherConstants.header },

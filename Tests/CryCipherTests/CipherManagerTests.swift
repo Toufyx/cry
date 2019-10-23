@@ -19,6 +19,7 @@ class CipherManagerTests: XCTestCase {
     static let validSaltBytes = [UInt8](1...32)
     static let validKeyBytes = [UInt8](1...32)
     static let validInitVectorBytes = [UInt8](1...16)
+    static let validHashBytes = [UInt8](1...32)
     static let validEncryptedDataBytes = [UInt8](128...255)
     static let validDecryptedDataBytes = [UInt8]("Hello World!".utf8)
     static let validSecretBytes = [UInt8]("password".utf8)
@@ -26,7 +27,8 @@ class CipherManagerTests: XCTestCase {
     static let validCipher = Cipher(
         salt: CipherManagerTests.validSaltBytes,
         initializationVector: CipherManagerTests.validInitVectorBytes,
-        encryptedBytes: CipherManagerTests.validEncryptedDataBytes
+        encryptedBytes: CipherManagerTests.validEncryptedDataBytes,
+        hash: validHashBytes
     )
 
     func testDecrypt() {
@@ -35,7 +37,10 @@ class CipherManagerTests: XCTestCase {
                 manager: EncryptionManagerStub(decryptedContent: CipherManagerTests.validDecryptedDataBytes)
             ),
             randomGenerator: RandomGeneratorStub(),
-            keyCoupleGenerator: KeyCoupleGeneratorStub()
+            keyCoupleGenerator: KeyCoupleGeneratorStub(),
+            signatureManager: AnySignatureManager(
+                manager: SignatureManagerStub(signature: CipherManagerTests.validHashBytes)
+            )
         )
         XCTAssertEqual(
             try! manager.decrypt(
@@ -52,7 +57,10 @@ class CipherManagerTests: XCTestCase {
                 manager: EncryptionManagerStub(encryptedBytes: CipherManagerTests.validEncryptedDataBytes)
             ),
             randomGenerator: RandomGeneratorStub(randomBytesClosure: { return [UInt8](1...$0)}),
-            keyCoupleGenerator: KeyCoupleGeneratorStub(encryptionKey: CipherManagerTests.validKeyBytes)
+            keyCoupleGenerator: KeyCoupleGeneratorStub(encryptionKey: CipherManagerTests.validKeyBytes),
+            signatureManager: AnySignatureManager(
+                manager: SignatureManagerStub(signature: CipherManagerTests.validHashBytes)
+            )
         )
         XCTAssertEqual(
             try! manager.encrypt(
@@ -62,7 +70,8 @@ class CipherManagerTests: XCTestCase {
             Cipher(
                 salt: CipherManagerTests.validSaltBytes,
                 initializationVector: CipherManagerTests.validInitVectorBytes,
-                encryptedBytes: CipherManagerTests.validEncryptedDataBytes
+                encryptedBytes: CipherManagerTests.validEncryptedDataBytes,
+                hash: CipherManagerTests.validHashBytes
             )
         )
     }

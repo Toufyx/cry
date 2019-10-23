@@ -57,3 +57,21 @@ class KeyCoupleGeneratorStub: KeyCoupleGenerator {
         return self.keyCouple
     }
 }
+
+class SignatureManagerStub: SignatureManager {
+    typealias Content = HashContent
+    typealias Signature = [UInt8]
+
+    private let signature: [UInt8]
+
+    init(signature: [UInt8]) {
+        self.signature = signature
+    }
+
+    func sign(content: HashContent) throws -> [UInt8] {
+        return self.signature
+    }
+
+    func verify(content: HashContent, signature: [UInt8]) throws { }
+
+}

@@ -19,17 +19,20 @@ class CipherSerializerTests: XCTestCase {
     static let validSaltBytes = [UInt8](0...31)
     static let validInitVectorBytes = [UInt8](0...15)
     static let validEncryptedDataBytes = [UInt8](128...255)
+    static let validHashBytes = [UInt8](0...31)
 
     let serializer = CipherSerializer()
     let validCipher = Cipher(
         salt: CipherSerializerTests.validSaltBytes,
         initializationVector: CipherSerializerTests.validInitVectorBytes,
-        encryptedBytes: CipherSerializerTests.validEncryptedDataBytes
+        encryptedBytes: CipherSerializerTests.validEncryptedDataBytes,
+        hash: CipherSerializerTests.validHashBytes
     )
     let validData = ([67, 82, 89, 48, 48, 48, 48, 49]
         + CipherSerializerTests.validSaltBytes
         + CipherSerializerTests.validInitVectorBytes
         + CipherSerializerTests.validEncryptedDataBytes
+        + CipherSerializerTests.validHashBytes
     )
 
     func testSerialize() {
