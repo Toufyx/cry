@@ -7,7 +7,7 @@ Simple CLI to manage encrypted files
 
 ``` sh
 # read an ecrypted file
-$ cry <FILE>
+$ cry read <FILE>
 
 # encrypt a file:
 $ cry encrypt <FILE>
